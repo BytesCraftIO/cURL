@@ -1,0 +1,100 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'signing'
+}
+
+sourceCompatibility = 1.8
+group 'io.bytescraft'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.auto.service:auto-service:1.1.1'
+    implementation 'com.javaquery:util:1.2.4'
+    implementation 'org.json:json:20240303'
+    annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Built-By': "BytesCraft Team"
+        )
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'cURL'
+            from components.java
+
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Java Util Library'
+                description = 'Java util class to reduce boilerplate codes'
+                url = 'https://github.com/javaquery/cURL'
+                licenses {
+                    license {
+                        name = 'MIT'
+                        url = 'https://github.com/javaquery/cURL/blob/main/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'javaquery'
+                        name = 'Vicky Thakor'
+                        email = 'vicky.thakor@javaquery.com'
+                        timezone = '+05:30'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/javaquery/cURL.git'
+                    developerConnection = 'scm:git:ssh://github.com/javaquery/cURL.git'
+                    url = 'https://github.com/javaquery/cURL'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username "bytescraft"
+                password "***"
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
