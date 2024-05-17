@@ -51,27 +51,27 @@ publishing {
                 }
             }
             pom {
-                name = 'Java Util Library'
-                description = 'Java util class to reduce boilerplate codes'
-                url = 'https://github.com/javaquery/cURL'
+                name = 'cURL Annotation'
+                description = 'cURL Annotation for Spring project to generate HTTP request documents'
+                url = 'https://github.com/BytesCraftIO/cURL'
                 licenses {
                     license {
                         name = 'MIT'
-                        url = 'https://github.com/javaquery/cURL/blob/main/LICENSE'
+                        url = 'https://github.com/BytesCraftIO/cURL/blob/main/LICENSE'
                     }
                 }
                 developers {
                     developer {
-                        id = 'javaquery'
-                        name = 'Vicky Thakor'
-                        email = 'vicky.thakor@javaquery.com'
+                        id = 'BytesCraftIO'
+                        name = 'BytesCraftIO Team'
+                        email = 'admin@bytescraft.com'
                         timezone = '+05:30'
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/javaquery/cURL.git'
-                    developerConnection = 'scm:git:ssh://github.com/javaquery/cURL.git'
-                    url = 'https://github.com/javaquery/cURL'
+                    connection = 'scm:git:git://github.com/BytesCraftIO/cURL.git'
+                    developerConnection = 'scm:git:ssh://github.com/BytesCraftIO/cURL.git'
+                    url = 'https://github.com/BytesCraftIO/cURL'
                 }
             }
         }
