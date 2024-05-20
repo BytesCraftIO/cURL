@@ -5,18 +5,21 @@ import com.javaquery.util.string.Strings;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Spring request mapping details
  * @author javaquery
  * @since 0.0.1
  */
 public class HttpRequestMapping {
 
+    /**
+     * HTTP request method names
+     */
     public enum RequestMethod {
         GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS, TRACE
     }
@@ -97,6 +100,7 @@ public class HttpRequestMapping {
         }
         if(Strings.nonNullNonEmpty(result)){
             result = result.replace("\"", "");
+            result = result.replace("{", "{{").replace("}", "}}");
         }
         return result;
     }

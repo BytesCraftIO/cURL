@@ -1,6 +1,7 @@
-package io.bytescraft;
+package io.bytescraft.common;
 
 /**
+ * String constants
  * @author javaquery
  * @since 0.0.1
  */
@@ -31,4 +32,18 @@ public class StringPool {
     public static final String DESCRIPTION = "description";
     public static final String VARIABLE = "variable";
     public static final String TYPE = "type";
+    /* following variables are used for thunder client (vs code extension) */
+    public static final String REQUESTS = "requests";
+    public static final String CLIENTNAME = "clientName";
+    public static final String COLLECTIONNAME = "collectionName";
+    public static final String VERSION = "version";
+    public static final String COLLECTIONID = "collectionId";
+    public static final String DATEEXPORTED = "dateExported";
+    public static final String _ID = "_id";
+    public static final String COLID = "colId";
+    public static final String CONTAINERID = "containerId";
+    public static final String HEADERS = "headers";
+    public static final String CREATED = "created";
+    public static final String MODIFIED = "modified";
+    public static final String FOLDERS = "folders";
 }

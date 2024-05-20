@@ -6,6 +6,7 @@ plugins {
 
 sourceCompatibility = 1.8
 group 'io.bytescraft'
+archivesBaseName = 'cURL'
 version '0.0.1'
 
 repositories {
@@ -78,12 +79,12 @@ publishing {
     }
     repositories {
         maven {
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username "bytescraft"
-                password "***"
+                username "$mavenCentralUsername"
+                password "$mavenCentralPassword"
             }
         }
     }

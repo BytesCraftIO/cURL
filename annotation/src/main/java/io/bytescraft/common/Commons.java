@@ -1,6 +1,7 @@
-package io.bytescraft;
+package io.bytescraft.common;
 
 /**
+ * Common code used in project
  * @author javaquery
  * @since 0.0.1
  */
@@ -8,12 +9,11 @@ public class Commons {
 
     /**
      * Convert camel case string to name
-     *
      * value: message , expected: Message
      * value: messageData, expected: Message Data
      * value: userAuth, expected: User Auth
-     * @param value
-     * @return
+     * @param value - input value
+     * @return - expected value
      */
     public static String convertCamelCaseToName(String value) {
         if (value == null || value.isEmpty()) {

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2024-04-30
  */
 @RestController
-@RequestMapping("/messageController")
+@RequestMapping("/message")
 public class MessageController {
 
     @cURL(name = "Get Message", folder = "/v1")

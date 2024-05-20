@@ -1,6 +1,7 @@
 package io.bytescraft.model;
 
 /**
+ * Holds extracted QueryParams from code.
  * @author javaquery
  * @since 0.0.1
  */

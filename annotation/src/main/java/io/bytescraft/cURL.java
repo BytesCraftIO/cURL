@@ -3,6 +3,7 @@ package io.bytescraft;
 import java.lang.annotation.*;
 
 /**
+ * cURL annotation to generate postman collection.
  * @author javaquery
  * @since 0.0.1
  */

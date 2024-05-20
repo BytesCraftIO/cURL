@@ -2,6 +2,7 @@ package io.bytescraft;
 
 import com.google.auto.service.AutoService;
 import com.javaquery.util.collection.Collections;
+import io.bytescraft.common.CURLProcessor;
 import io.bytescraft.postman.PostmanSchema;
 
 import javax.annotation.processing.*;
@@ -9,6 +10,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 /**
+ * cURL annotation handler
  * @author javaquery
  * @since 0.0.1
  */
