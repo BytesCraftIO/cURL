@@ -40,6 +40,7 @@ jar {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId = 'io.bytescraft'
             artifactId = 'cURL'
             from components.java
 
@@ -52,7 +53,7 @@ publishing {
                 }
             }
             pom {
-                name = 'cURL Annotation'
+                name = 'cURL'
                 description = 'cURL Annotation for Spring project to generate HTTP request documents'
                 url = 'https://github.com/BytesCraftIO/cURL'
                 licenses {
@@ -79,13 +80,7 @@ publishing {
     }
     repositories {
         maven {
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username "$mavenCentralUsername"
-                password "$mavenCentralPassword"
-            }
+            url = layout.buildDirectory.dir('staging-deploy')
         }
     }
 }
