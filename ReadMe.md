@@ -1,4 +1,4 @@
-# 📬 cURL Annotation for Spring
+# 📬 cURL Annotation for Spring (Java)
 The **cURL** annotation helps you generate a Postman collection directly from your Spring Rest API code. By applying this annotation to your controller methods, you can automatically create detailed entries for each endpoint in your API.
 
 ## 🚀 How to Use
@@ -12,7 +12,7 @@ Add the following dependency to your `pom.xml` file:
     <dependency>
       <groupId>io.bytescraft</groupId>
       <artifactId>cURL</artifactId>
-      <version>0.0.1</version>
+      <version>0.0.2</version>
     </dependency>
     
     <build>
@@ -26,7 +26,7 @@ Add the following dependency to your `pom.xml` file:
                         <path>
                             <groupId>io.bytescraft</groupId>
                             <artifactId>cURL</artifactId>
-                            <version>0.0.1</version>
+                            <version>0.0.2</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -41,8 +41,8 @@ Add the following dependency to your `pom.xml` file:
 Add the following dependency to your `build.gradle` file:
 
 ```groovy
-implementation 'io.bytescraft:cURL:0.0.1'
-annotationProcessor 'io.bytescraft:cURL:0.0.1'
+implementation 'io.bytescraft:cURL:0.0.2'
+annotationProcessor 'io.bytescraft:cURL:0.0.2'
 ```
 
 ### 2. Annotate Your Controller Methods

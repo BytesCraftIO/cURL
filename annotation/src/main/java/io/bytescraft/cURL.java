@@ -12,12 +12,6 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface cURL {
     /**
-     * Current implementation supports only postman collection as an output.
-     * @return output type
-     */
-    String output() default "postman";
-
-    /**
      * Folder name where postman collection will be saved.
      * @return folder name
      */

@@ -7,7 +7,7 @@ plugins {
 sourceCompatibility = 1.8
 group 'io.bytescraft'
 archivesBaseName = 'cURL'
-version '0.0.1'
+version '0.0.2'
 
 repositories {
     mavenCentral()

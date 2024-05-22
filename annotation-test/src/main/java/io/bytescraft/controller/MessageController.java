@@ -48,7 +48,7 @@ public class MessageController {
 
     @cURL
     @GetMapping(value = "/filter" , produces = "application/json")
-    public ResponseDTO filterMessages(@RequestParam(name = "query") String query, @RequestParam(name = "page", required = false) int page, @RequestParam(name = "size", required = false) int size) {
+    public ResponseDTO filterMessages(@RequestParam String query, @RequestParam(name = "page", required = false) int page, @RequestParam(name = "size", required = false) int size) {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setMessage("Hello World");
         return responseDTO;

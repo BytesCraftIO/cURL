@@ -133,6 +133,10 @@ public abstract class AbstractCURLProcessor implements CURLProcessor {
                     queryParam.setName(value);
                 }else if(Strings.nullOrEmpty(value) && Strings.nonNullNonEmpty(name)){
                     queryParam.setName(name);
+                }else if(Strings.nullOrEmpty(name)
+                    && Strings.nullOrEmpty(value)){
+                    /* use variable name when name and value not provided in annotation */
+                    queryParam.setName(parameter.getSimpleName().toString());
                 }
                 result.add(queryParam);
             }
