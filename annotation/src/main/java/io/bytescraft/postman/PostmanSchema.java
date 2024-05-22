@@ -130,6 +130,7 @@ public class PostmanSchema extends AbstractCURLProcessor {
      * @return - folder object if found else null
      */
     private JSONObject findFolder(JSONArray items, String folderName){
+        folderName = Commons.convertCamelCaseToName(folderName);
         int itemsLength = items.length();
         for (int i = 0; i < itemsLength; i++) {
             JSONObject jsonObject = items.optJSONObject(i);

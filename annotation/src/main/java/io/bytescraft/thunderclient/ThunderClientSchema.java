@@ -200,6 +200,7 @@ public class ThunderClientSchema extends AbstractCURLProcessor {
      * @return - folder object
      */
     private JSONObject findFolder(JSONArray folders, String name, String containerId){
+        name = Commons.convertCamelCaseToName(name);
         JSONObject result = null;
         for(int i = 0; i < folders.length(); i++){
             JSONObject folder = folders.getJSONObject(i);
