@@ -6,6 +6,8 @@ import com.javaquery.util.time.DatePattern;
 import com.javaquery.util.time.Dates;
 import io.bytescraft.cURL;
 import io.bytescraft.common.AbstractCURLProcessor;
+import io.bytescraft.common.Commons;
+import io.bytescraft.common.Configuration;
 import io.bytescraft.common.StringPool;
 import io.bytescraft.model.QueryParam;
 import io.bytescraft.spring.annotations.HttpRequestMapping;
@@ -26,8 +28,8 @@ import java.util.*;
  */
 public class ThunderClientSchema extends AbstractCURLProcessor {
 
-    public ThunderClientSchema(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv, ProcessingEnvironment processingEnvironment) {
-        super(annotations, roundEnv, processingEnvironment);
+    public ThunderClientSchema(Configuration cfg, Set<? extends TypeElement> annotations, RoundEnvironment roundEnv, ProcessingEnvironment processingEnvironment) {
+        super(cfg, annotations, roundEnv, processingEnvironment);
     }
 
     @Override
@@ -93,6 +95,7 @@ public class ThunderClientSchema extends AbstractCURLProcessor {
             result.put(StringPool.CREATED, Dates.format(Dates.current(), DatePattern.Y_M_D_T_HMSSSSZ));
             result.put(StringPool.MODIFIED, Dates.format(Dates.current(), DatePattern.Y_M_D_T_HMSSSSZ));
             result.put(StringPool.HEADERS, headers(httpRequestMapping.extractHeaders()));
+            result.put(StringPool.PARAMS, params(queryParams));
             if(Objects.nonNull(convertedClassToJSON)){
                 result.put(StringPool.BODY, prepareRequestBody(convertedClassToJSON));
             }
@@ -107,14 +110,14 @@ public class ThunderClientSchema extends AbstractCURLProcessor {
      */
     private void addCollectionDetails(JSONObject root, UUID collectionId) {
         root.put(StringPool.CLIENTNAME, "Thunder Client");
-        root.put(StringPool.COLLECTIONNAME, "Thunder Client Collection");
+        root.put(StringPool.COLLECTIONNAME, Strings.nonNullNonEmpty(cfg.getCollectionName()) ? cfg.getCollectionName() : "Thunder Client Collection");
         root.put(StringPool.COLLECTIONID, collectionId);
         root.put(StringPool.DATEEXPORTED, Dates.format(Dates.current(), DatePattern.Y_M_D_T_HMSSSSZ));
         root.put(StringPool.VERSION, "1.2");
     }
 
     /**
-     * Prepare variables
+     * Prepare headers
      * @param strings - variable names
      * @return - variables
      */
@@ -128,6 +131,23 @@ public class ThunderClientSchema extends AbstractCURLProcessor {
             headers.put(headerObject);
         }
         return headers;
+    }
+
+    /**
+     * Prepare params
+     * @param queryParams - query parameters
+     * @return - params
+     */
+    private JSONArray params(List<QueryParam> queryParams) {
+        JSONArray params = new JSONArray();
+        for(QueryParam queryParam : queryParams){
+            JSONObject param = new JSONObject();
+            param.put(StringPool.NAME, queryParam.getName());
+            param.put(StringPool.VALUE, queryParam.getDefaultValue());
+            param.put(StringPool.IS_PATH, false);
+            params.put(param);
+        }
+        return params;
     }
 
     /**
@@ -150,6 +170,7 @@ public class ThunderClientSchema extends AbstractCURLProcessor {
      * @return - container id
      */
     private String findFolderRecursive(JSONArray foldersArray, String folderName, String containerId){
+        folderName = folderName.startsWith("/") ? folderName.substring(1) : folderName;
         int fwdSlashIndex = folderName.indexOf("/");
         if(fwdSlashIndex > 0){
             String folder = folderName.substring(0, fwdSlashIndex);
@@ -182,7 +203,7 @@ public class ThunderClientSchema extends AbstractCURLProcessor {
         JSONObject result = null;
         for(int i = 0; i < folders.length(); i++){
             JSONObject folder = folders.getJSONObject(i);
-            if(folder.optString(StringPool.NAME).equals(name)
+            if(folder.optString(StringPool.NAME).equalsIgnoreCase(name)
                 && folder.optString(StringPool.CONTAINERID).equals(containerId)){
                 result = folder;
                 break;
@@ -200,7 +221,7 @@ public class ThunderClientSchema extends AbstractCURLProcessor {
     private JSONObject createFolder(String name, String containerId){
         JSONObject newFolder = new JSONObject();
         newFolder.put(StringPool._ID, UUID.randomUUID().toString());
-        newFolder.put(StringPool.NAME, name);
+        newFolder.put(StringPool.NAME, Commons.convertCamelCaseToName(name));
         newFolder.put(StringPool.CONTAINERID, containerId);
         newFolder.put(StringPool.CREATED, Dates.format(Dates.current(), DatePattern.Y_M_D_T_HMSSSSZ));
         return newFolder;

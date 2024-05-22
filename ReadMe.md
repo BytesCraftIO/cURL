@@ -98,7 +98,34 @@ public class MessageController {
 }
 ```
 
-### 3. 🛠️ Generate Postman Collection
+### 3. 🛠️ Create cURL.config File (Optional)
+   Create a cURL.config file at the `src` folder level in your Java project. This configuration file supports the following properties:
+
+- **collection.name**: The name of the generated collection.
+- **collection.description**: A description for the generated collection.
+
+**Example cURL.config file:**
+
+```properties
+collection.name=cURL
+collection.description=This is a collection of cURL API endpoints.
+```
+
+## 📂 Project Structure
+Your project structure should look like this:
+
+```scss
+my-java-project/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   └── resources/
+├── cURL.config
+├── pom.xml (for Maven projects)
+└── build.gradle (for Gradle projects)
+```
+
+### 4. 🛠️ Generate Postman Collection
 Once your methods are annotated, build your project to generate a Postman collection. The specifics of this process will depend on the integration details of the cURL annotation, which typically involves running a Maven or Gradle task to process the annotations and output the Postman collection.
 
 ## 📜 License

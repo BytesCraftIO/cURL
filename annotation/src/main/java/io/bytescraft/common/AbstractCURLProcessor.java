@@ -18,6 +18,8 @@ import javax.lang.model.type.TypeMirror;
 import java.io.File;
 import java.util.*;
 
+import static io.bytescraft.common.Configuration.CURRENT_WORKING_DIR;
+
 /**
  * Abstract annotation processor implementation
  * @author javaquery
@@ -25,14 +27,15 @@ import java.util.*;
  */
 public abstract class AbstractCURLProcessor implements CURLProcessor {
 
-    private static final String CURRENT_WORKING_DIR = System.getProperty("user.dir");
     protected static final String SPRING_REQUEST_PARAM_DEFAULT_VALUE = "\n\t\t\n\t\t\n\ue000\ue001\ue002\n\t\t\t\t\n";
     protected static final String LOCALHOST = "localhost:8080";
+    protected final Configuration cfg;
     protected final Set<? extends TypeElement> annotations;
     protected final RoundEnvironment roundEnv;
     protected final ProcessingEnvironment processingEnv;
 
-    public AbstractCURLProcessor(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv, ProcessingEnvironment processingEnvironment) {
+    public AbstractCURLProcessor(Configuration cfg, Set<? extends TypeElement> annotations, RoundEnvironment roundEnv, ProcessingEnvironment processingEnvironment) {
+        this.cfg = cfg;
         this.annotations = annotations;
         this.roundEnv = roundEnv;
         this.processingEnv = processingEnvironment;
@@ -40,8 +43,7 @@ public abstract class AbstractCURLProcessor implements CURLProcessor {
 
     protected List<? extends VariableElement> getVariableElements(Element element){
         ExecutableElement executableElement = (ExecutableElement) element;
-        List<? extends VariableElement> parameters = executableElement.getParameters();
-        return parameters;
+        return executableElement.getParameters();
     }
 
     /**
@@ -199,8 +201,10 @@ public abstract class AbstractCURLProcessor implements CURLProcessor {
                     && !cURLObject.folder().startsWith("/")){
                 classLevelRequestPath = classLevelRequestPath + "/";
             }
-            classLevelRequestPath = Commons.convertCamelCaseToName(classLevelRequestPath.replace("/", ""));
             result = classLevelRequestPath + cURLObject.folder();
+            if(result.endsWith("/")){
+                result = result.substring(0, result.length() - 1);
+            }
         }
         return result;
     }
@@ -211,6 +215,10 @@ public abstract class AbstractCURLProcessor implements CURLProcessor {
      * @param content - content to write
      */
     public void writeToOutputFile(String fileName, String content) {
+        if(Strings.nonNullNonEmpty(cfg.getCollectionName())){
+            fileName = cfg.getCollectionName() + "_" + fileName;
+            fileName = fileName.replace(" ", "_");
+        }
         JFile outputFile = new JFile(CURRENT_WORKING_DIR + File.separatorChar + fileName);
         if(outputFile.exists()){
             boolean ignored = outputFile.delete();

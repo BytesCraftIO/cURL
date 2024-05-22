@@ -46,4 +46,6 @@ public class StringPool {
     public static final String CREATED = "created";
     public static final String MODIFIED = "modified";
     public static final String FOLDERS = "folders";
+    public static final String PARAMS = "params";
+    public static final String IS_PATH = "isPath";
 }
