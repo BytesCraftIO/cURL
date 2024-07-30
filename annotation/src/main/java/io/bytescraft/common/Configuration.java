@@ -3,6 +3,7 @@ package io.bytescraft.common;
 import com.javaquery.util.collection.Collections;
 import com.javaquery.util.io.JFile;
 import com.javaquery.util.string.Strings;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,15 +17,18 @@ import java.util.*;
 public class Configuration {
 
     public static final String CURRENT_WORKING_DIR = System.getProperty("user.dir");
-    private static final String CONFIG_FILE = "cURL.config";
+    private static final String CONFIG_FILE = "cURL.yaml";
     private static final List<String> SUPPORTED_CLIENTS = Client.strValues();
 
+    private Map<String, Object> config;
     private String collectionName;
     private String collectionDescription;
     private final Set<String> collectionClients;
+    private Map<String, Object> variables;
 
     public Configuration() {
         collectionClients = new HashSet<>();
+        variables = new HashMap<>();
         init();
     }
 
@@ -32,21 +36,20 @@ public class Configuration {
         JFile configFile = new JFile(CURRENT_WORKING_DIR + File.separatorChar + CONFIG_FILE);
         if (configFile.exists()) {
             try (
-                    FileInputStream fileInputStream = new FileInputStream(configFile)
+                    FileInputStream fileInputStream = new FileInputStream(configFile);
             ) {
-                Properties properties = new Properties();
-                properties.load(fileInputStream);
-                collectionName = properties.getProperty("collection.name");
-                collectionDescription = properties.getProperty("collection.description");
-
-                String strCollectionClients = properties.getProperty("collection.clients");
-                Strings.nonNullNonEmpty(strCollectionClients, ()->{
-                    for (String strClient : strCollectionClients.split("\\|")) {
-                        if (SUPPORTED_CLIENTS.contains(strClient)) {
-                            collectionClients.add(strClient);
+                Yaml yaml = new Yaml();
+                config = yaml.load(fileInputStream);
+                collectionName = optString(ConfigKeys.COLLECTION_NAME);
+                collectionDescription = optString(ConfigKeys.COLLECTION_DESCRIPTION);
+                List<String> clients = optList(ConfigKeys.COLLECTION_CLIENTS);
+                if(Collections.nonNullNonEmpty(clients)){
+                    for (String client : clients) {
+                        if (SUPPORTED_CLIENTS.contains(client)) {
+                            collectionClients.add(client);
                         }
                     }
-                });
+                }
             } catch (Exception ignored) {
             }
         }
@@ -65,5 +68,50 @@ public class Configuration {
             collectionClients.add(Client.POSTMAN.name());
         }
         return collectionClients;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getVariables() {
+        if(Collections.nullOrEmpty(variables)){
+            Object vars = optObject(config, ConfigKeys.COLLECTION_VAR);
+            if(vars instanceof Map){
+                variables = (Map<String, Object>) vars;
+            }
+        }
+        return variables;
+    }
+
+    public String optString(String key){
+        Object object = optObject(config, key);
+        if(object instanceof String){
+            return (String) object;
+        }
+        return "";
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> optList(String key){
+        Object object = optObject(config, key);
+        if(object instanceof List){
+            return (List<String>) object;
+        }
+        return new ArrayList<>();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Object optObject(Map<String, Object> map, String key){
+        if(Collections.nullOrEmpty(map) || Strings.nullOrEmpty(key)){
+            return null;
+        }
+        String[] keys = key.split("\\.");
+        if(keys.length == 1){
+            return map.get(key);
+        }else if(map.containsKey(keys[0])){
+            Map<String, Object> subMap = (Map<String, Object>) map.get(keys[0]);
+            key = key.replace(keys[0] + ".", "");
+            return optObject(subMap, key);
+        }else{
+            return null;
+        }
     }
 }

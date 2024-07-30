@@ -1,0 +1,16 @@
+collection:
+  name: cURL
+  description: cURL is a command-line tool for getting or sending data including files using URL syntax.
+  clients:
+    - POSTMAN
+    - THUNDER_CLIENT
+  var:
+    HOST: https://www.example.com
+    PORT: 443
+    ID: 40
+postman:
+  collection:
+    pre-request: |
+      pm.request.headers.add({key: 'userType',value: 'MANAGER'});
+    post-response: |
+      pm.collectionVariables.set("variable_key", "variable_value");

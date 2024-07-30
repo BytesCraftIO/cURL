@@ -65,6 +65,7 @@ public abstract class AbstractCURLProcessor implements CURLProcessor {
      * @param element - method element
      * @return - class level request mapping
      */
+    @SuppressWarnings("unchecked")
     private List<Object> getClassLevelRequestMapping(Element element){
         List<Object> classLevelRequestMapping = null;
         AnnotationMirror requestMappingAnnotation = getAnnotationMirror(element.getEnclosingElement(), "org.springframework.web.bind.annotation.RequestMapping");

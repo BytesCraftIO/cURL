@@ -3,10 +3,7 @@ package io.bytescraft.postman;
 import com.javaquery.util.Objects;
 import com.javaquery.util.string.Strings;
 import io.bytescraft.cURL;
-import io.bytescraft.common.AbstractCURLProcessor;
-import io.bytescraft.common.Commons;
-import io.bytescraft.common.Configuration;
-import io.bytescraft.common.StringPool;
+import io.bytescraft.common.*;
 import io.bytescraft.model.QueryParam;
 import io.bytescraft.spring.annotations.HttpRequestMapping;
 import org.json.JSONArray;
@@ -18,6 +15,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
@@ -27,6 +25,10 @@ import java.util.StringJoiner;
  * @since 0.0.1
  */
 public class PostmanSchema extends AbstractCURLProcessor {
+
+    private static final String OUTPUT_FILE = "postman_collection.json";
+    private static final String SCHEMA = "https://schema.getpostman.com/json/collection/v2.1.0/collection.json";
+    private static final String DEFAULT_COL_NAME = "Postman Collection";
 
     public PostmanSchema(Configuration cfg, Set<? extends TypeElement> annotations, RoundEnvironment roundEnv, ProcessingEnvironment processingEnvironment) {
         super(cfg, annotations, roundEnv, processingEnvironment);
@@ -62,7 +64,8 @@ public class PostmanSchema extends AbstractCURLProcessor {
         if(ROOT.has(StringPool.ITEM)){
             ROOT.put(StringPool.INFO, info());
             ROOT.put(StringPool.VARIABLE, variables());
-            writeToOutputFile("postman_collection.json", ROOT.toString(4));
+            ROOT.put(StringPool.EVENTS, events());
+            writeToOutputFile(OUTPUT_FILE, ROOT.toString(4));
         }
     }
 
@@ -72,8 +75,8 @@ public class PostmanSchema extends AbstractCURLProcessor {
      */
     private JSONObject info(){
         JSONObject info = new JSONObject();
-        info.put(StringPool.NAME, Strings.nonNullNonEmpty(cfg.getCollectionName()) ? cfg.getCollectionName() : "Postman Collection");
-        info.put(StringPool.SCHEMA, "https://schema.getpostman.com/json/collection/v2.1.0/collection.json");
+        info.put(StringPool.NAME, Strings.nonNullNonEmpty(cfg.getCollectionName()) ? cfg.getCollectionName() : DEFAULT_COL_NAME);
+        info.put(StringPool.SCHEMA, SCHEMA);
         info.put(StringPool.DESCRIPTION, cfg.getCollectionDescription());
         return info;
     }
@@ -83,14 +86,54 @@ public class PostmanSchema extends AbstractCURLProcessor {
      * @return - default variables
      */
     private JSONArray variables() {
-        JSONObject host = new JSONObject();
-        host.put(StringPool.KEY, "HOST");
-        host.put(StringPool.VALUE, "localhost:8080");
-        host.put(StringPool.TYPE, "string");
-
         JSONArray variables = new JSONArray();
-        variables.put(host);
+        Map<String, Object> vars = cfg.getVariables();
+        vars.putIfAbsent(StringPool.HOST_CAPS, LOCALHOST);
+
+        for(Map.Entry<String, Object> entry : vars.entrySet()){
+            JSONObject variable = new JSONObject();
+            variable.put(StringPool.KEY, entry.getKey());
+            variable.put(StringPool.VALUE, entry.getValue());
+
+            if(entry.getValue() instanceof String){
+                variable.put(StringPool.TYPE, StringPool.STRING);
+            }else if(entry.getValue() instanceof Number){
+                variable.put(StringPool.TYPE, StringPool.NUMBER);
+            }
+            variables.put(variable);
+        }
         return variables;
+    }
+
+    private JSONArray events(){
+        String collectionPreRequestScript = cfg.optString(ConfigKeys.POSTMAN_COL_PRE_REQUEST);
+        String collectionPostResponseScript = cfg.optString(ConfigKeys.POSTMAN_COL_POST_RESPONSE);
+
+        JSONArray events = new JSONArray();
+        if(Strings.nonNullNonEmpty(collectionPreRequestScript)){
+            JSONObject script = new JSONObject();
+            script.put(StringPool.TYPE, StringPool.TEST_JAVASCRIPT);
+            script.put(StringPool.PACKAGE, new JSONObject());
+            script.put(StringPool.EXEC, new JSONArray(collectionPreRequestScript.split("\n")));
+
+            JSONObject preRequestScript = new JSONObject();
+            preRequestScript.put(StringPool.LISTEN, StringPool.PREREQUEST);
+            preRequestScript.put(StringPool.SCRIPT, script);
+            events.put(preRequestScript);
+        }
+
+        if(Strings.nonNullNonEmpty(collectionPostResponseScript)){
+            JSONObject script = new JSONObject();
+            script.put(StringPool.TYPE, StringPool.TEST_JAVASCRIPT);
+            script.put(StringPool.PACKAGE, new JSONObject());
+            script.put(StringPool.EXEC, new JSONArray(collectionPostResponseScript.split("\n")));
+
+            JSONObject postResponseScript = new JSONObject();
+            postResponseScript.put(StringPool.LISTEN, StringPool.TEST);
+            postResponseScript.put(StringPool.SCRIPT, script);
+            events.put(postResponseScript);
+        }
+        return events;
     }
 
     /**
@@ -191,7 +234,7 @@ public class PostmanSchema extends AbstractCURLProcessor {
             String[] headerArray = header.split("=");
             headerObject.put(StringPool.KEY, headerArray[0]);
             headerObject.put(StringPool.VALUE, headerArray[1]);
-            headerObject.put(StringPool.TYPE, "text");
+            headerObject.put(StringPool.TYPE, StringPool.TEXT);
             headers.put(headerObject);
         }
         return headers;
