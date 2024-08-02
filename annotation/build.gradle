@@ -67,7 +67,7 @@ publishing {
                     developer {
                         id = 'BytesCraftIO'
                         name = 'BytesCraftIO Team'
-                        email = 'admin@bytescraft.com'
+                        email = 'admin@bytescraft.io'
                         timezone = '+05:30'
                     }
                 }
