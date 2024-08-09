@@ -12,7 +12,7 @@ Add the following dependency to your `pom.xml` file:
     <dependency>
       <groupId>io.bytescraft</groupId>
       <artifactId>cURL</artifactId>
-      <version>0.0.2</version>
+      <version>0.0.3</version>
     </dependency>
     
     <build>
@@ -26,7 +26,7 @@ Add the following dependency to your `pom.xml` file:
                         <path>
                             <groupId>io.bytescraft</groupId>
                             <artifactId>cURL</artifactId>
-                            <version>0.0.2</version>
+                            <version>0.0.3</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -41,8 +41,8 @@ Add the following dependency to your `pom.xml` file:
 Add the following dependency to your `build.gradle` file:
 
 ```groovy
-implementation 'io.bytescraft:cURL:0.0.2'
-annotationProcessor 'io.bytescraft:cURL:0.0.2'
+implementation 'io.bytescraft:cURL:0.0.3'
+annotationProcessor 'io.bytescraft:cURL:0.0.3'
 ```
 
 ### 2. Annotate Your Controller Methods
@@ -98,17 +98,31 @@ public class MessageController {
 }
 ```
 
-### 3. 🛠️ Create cURL.config File (Optional)
-   Create a cURL.config file at the `src` folder level in your Java project. This configuration file supports the following properties:
+### 3. 🛠️ Create cURL.yaml File (Optional)
+   Create a cURL.yaml file at the `src` folder level in your Java project. This configuration file supports the following properties:
 
 - **collection.name**: The name of the generated collection.
 - **collection.description**: A description for the generated collection.
 
-**Example cURL.config file:**
+**Example cURL.yaml file:**
 
-```properties
-collection.name=cURL
-collection.description=This is a collection of cURL API endpoints.
+```yaml
+collection:
+  name: cURL
+  description: cURL is a command-line tool for getting or sending data including files using URL syntax.
+  clients:
+    - POSTMAN
+    - THUNDER_CLIENT
+  var:
+    HOST: https://www.example.com
+    PORT: 443
+    ID: 40
+postman:
+  collection:
+    pre-request: |
+      pm.request.headers.add({key: 'userType',value: 'MANAGER'});
+    post-response: |
+      pm.collectionVariables.set("variable_key", "variable_value");
 ```
 
 ## 📂 Project Structure
@@ -120,7 +134,7 @@ my-java-project/
 │   ├── main/
 │   │   ├── java/
 │   │   └── resources/
-├── cURL.config
+├── cURL.yaml
 ├── pom.xml (for Maven projects)
 └── build.gradle (for Gradle projects)
 ```

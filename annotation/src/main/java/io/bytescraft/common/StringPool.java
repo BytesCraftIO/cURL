@@ -48,4 +48,16 @@ public class StringPool {
     public static final String FOLDERS = "folders";
     public static final String PARAMS = "params";
     public static final String IS_PATH = "isPath";
+    public static final String LISTEN = "listen";
+    public static final String PACKAGE = "package";
+    public static final String EXEC = "exec";
+    public static final String SCRIPT = "script";
+    public static final String EVENTS = "events";
+    public static final String HOST_CAPS = "HOST";
+    public static final String STRING = "string";
+    public static final String NUMBER = "number";
+    public static final String TEST_JAVASCRIPT = "text/javascript";
+    public static final String PREREQUEST = "prerequest";
+    public static final String TEST = "test";
+    public static final String TEXT = "text";
 }
